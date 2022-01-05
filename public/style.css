@@ -1,0 +1,133 @@
+@import url('./fonts/fonts.css');
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --text-primary: #000000;
+        --variable-for-this-specific-field-why-devin: #2E3338;
+        --text-secondary: #3B3B3B;
+        --text-tertiary: #8e9297;
+        --background: #ffffff;
+        --background2: #EBEDEF;
+        --navColor: #FAFAFA;
+        --accentColor: #00a86b;
+        --blurple: #7289da;
+        --darker-blurple: #677bc4;
+        --darkest-blurple: #5b6eae;
+        --background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.3)), url("../images/banner.png");
+        background-blend-mode: overlay;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-primary: #ffffff;
+        --variable-for-this-specific-field-why-devin: #ffffff;
+        --text-secondary: #9e9e9e;
+        --text-tertiary: #8e9297;
+        --background: #36393f;
+        --background2: #2f3136;
+        --navColor: #363636;
+        --accentColor: #00a86b;
+        --blurple: #7289da;
+        --darker-blurple: #677bc4;
+        --darkest-blurple: #5b6eae;
+        --background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.3)), url("../images/banner.png");
+    }
+}
+
+body {
+    background: var(--background);
+
+    font-family: "Poppins", sans-serif;
+}
+
+.jumbotron {
+    background: var(--background2);
+}
+
+h1 {
+    color: var(--text-primary);
+    font-family: "Renogare", sans-serif;
+}
+
+button, a.btn {
+    color: white !important;
+    background-color: var(--blurple) !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    transition: background-color .17s ease;
+}
+
+button:hover, a.btn:hover {
+    background-color: var(--darker-blurple) !important;
+}
+
+button:active, a.btn:active {
+    background-color: var(--darkest-blurple) !important;
+}
+
+
+label {
+    color: var(--text-tertiary);
+}
+
+textarea {
+    color: var(--variable-for-this-specific-field-why-devin) !important;
+
+    background: rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid rgba(0, 0, 0, 0.3) !important;
+
+    outline: none !important;
+    box-shadow: none !important;
+
+    transition: border-color .2s ease-in-out;
+    resize: none;
+
+    overflow-y: hidden;
+}
+
+textarea:hover {
+    border-color: #040405 !important;
+}
+
+textarea:focus {
+    border-color: #7289da !important;
+}
+
+.textInput {
+    position: relative;
+}
+
+.remainingLength {
+    position: absolute;
+    bottom: 12px;
+    right: 14px;
+    font-size: 12px;
+    font-family: monospace;
+    pointer-events: none;
+    color: #72767d;
+}
+
+.lowOnSpace {
+    color: #f36c6c;
+}
+div.note-msg {
+    color: var(--text-tertiary);
+}
+#username {
+    color: var(--text-secondary) !important;
+}
+
+
+a {
+    color: var(--text-primary) !important;
+}
+    
+a:hover {
+    color: var(--text-primary) !important;
+}
+    
+a:active {
+    color: var(--text-primary) !important;
+}

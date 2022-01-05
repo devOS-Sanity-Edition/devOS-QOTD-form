@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Sans&display=swap" rel="stylesheet">
+        <link href="./fonts/fonts.css" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+
+        <title>DevOS QOTD suggestion form</title>
+    </head>
+    <body class="h-100 d-flex flex-column justify-content-center align-items-stretch">
+        <div class="jumbotron text-center mb-0">
+            <h1>DevOS question of the day suggestion form</h1>
+        </div>
+
+        <div class="flex-fill flex-column text-center d-flex h-100 justify-content-center align-items-center">
+            <a class="btn" id="login" style="font-size: 2rem; margin-bottom:8px;" href="/.netlify/functions/oauth">Login with Discord</a>
+            <div class="note-msg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="d-inline">Discord login is required to verify that you are a member of the server. 
+                </p>
+            </div>
+            <div class="note-msg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="d-inline"> submissions made through here are anonymous and aren't linked to your account.
+                </p>
+            </div>
+        </div>
+        <script>
+            function generateRandomString() {
+                const rand = Math.floor(Math.random() * 10);
+                let randStr = "";
+
+                for (let i = 0; i < 20 + rand; i++) {
+                    randStr += String.fromCharCode(33 + Math.floor(Math.random() * 94));
+                }
+
+                return randStr;
+            }
+
+            const state = generateRandomString();
+            localStorage.setItem("state", state);
+
+            document.getElementById("login").href += `?state=${encodeURIComponent(state)}`;
+        </script>
+    </body>
+</html>

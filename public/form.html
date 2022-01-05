@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Sans&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+
+        <title>DevOS QOTD suggestion form</title>
+    </head>
+    <body>
+        <div class="jumbotron text-center">
+            <h1>DevOS question of the day suggestion form</h1>
+        </div>
+
+        <div class="container">
+            <div class="d-flex">
+                <img id="avatar" class="rounded-circle" width="64" height="64" alt="Your avatar">
+                <h2 id="username" class="ml-3 mb-0 align-self-center"></h2>
+            </div>
+
+            <form class="mt-3" method="post" name="appeal" action="/.netlify/functions/submit-qotd">
+                <input type="hidden" id="token" name="token">
+                <div class="form-group">
+                    <label for="qotd">What question would you like to submit?</label>
+                    <div class="textInput">
+                        <textarea class="form-control" id="qotd" name="qotd" required maxlength="1024"></textarea>
+                        <div class="remainingLength"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="qotdDesc">Describe the question:</label>
+                    <div class="textInput">
+                        <textarea class="form-control" id="qotdDesc" name="qotdDesc" required maxlength="1024"></textarea>
+                        <div class="remainingLength"></div>
+                    </div>
+                </div>
+                <div class="note-msg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg> 
+                    <p class="d-inline"> This submission is anonymous and isn't linked to your account.
+                    </p>
+                </div>
+                <div class="text-right">
+                    <button type="submit" class="btn" style="margin-bottom:10px;">Submit</button>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            function parseJwt(token) {
+                const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+
+                return JSON.parse(jsonPayload);
+            };
+
+            const params = new URLSearchParams(document.location.search.substring(1));
+            if (!params.has("state") || !params.has("token")) {
+                window.location.href = `/error?msg=${encodeURIComponent("Missing state or token")}`;
+            }
+
+            if (params.get("state") !== localStorage.getItem("state")) {
+                window.location.href = `/error?msg=${encodeURIComponent("Invalid state")}`;
+            }
+
+            const jwt = params.get("token");
+            const userInfo = parseJwt(jwt);
+
+            const avatar = userInfo.avatar
+                ? `avatars/${encodeURIComponent(userInfo.id)}/${encodeURIComponent(userInfo.avatar)}.webp`
+                : `embed/avatars/${userInfo.discriminator % 5}.png`;
+            document.getElementById("avatar").src = `https://cdn.discordapp.com/${avatar}?size=256`;
+
+            document.getElementById("username").textContent = `${userInfo.username}#${userInfo.discriminator}`;
+
+            document.getElementById("token").value = jwt;
+
+            [...document.getElementsByClassName("textInput")].forEach(div => {
+                const textarea = div.firstElementChild;
+
+                const updateTextarea = () => {
+                    textarea.style.height = "auto";
+                    textarea.style.height = `${textarea.scrollHeight}px`;
+
+                    const charactersRemaining = textarea.maxLength - textarea.textLength;
+                    const remainingLength = div.lastElementChild;
+                    if (charactersRemaining <= 100) {
+                        remainingLength.classList.add("lowOnSpace");
+                    } else {
+                        remainingLength.classList.remove("lowOnSpace");
+                    }
+                    remainingLength.textContent = charactersRemaining;
+                }
+
+                updateTextarea();
+                textarea.oninput = updateTextarea;
+            })
+        </script>
+    </body>
+</html>
