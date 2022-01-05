@@ -26,17 +26,38 @@ exports.handler = async function (event, context) {
         const data = await result.json();
 
         if (!result.ok) {
-            console.log(data);
-            throw new Error("Failed to get user access token");
+            console.error("Failed to get user access token");
+            console.error(data);
+            return {
+                statusCode: 303,
+                headers: {
+                    "Location": `/error`
+                }
+            };
         }
         
         const user = await getUserInfo(data.access_token);
+        if(user.fetchError) {
+            return {
+                statusCode: 303,
+                headers: {
+                    "Location": `/error`
+                }
+            };
+        }
         const guildUser = await getGuildUserInfo(user.id, process.env.GUILD_ID, process.env.DISCORD_BOT_TOKEN);
-        if (!guildUser) {
+        if (guildUser.userNotFound) {
             return {
                 statusCode: 303,
                 headers: {
                     "Location": `/error?msg=${encodeURIComponent(`This account (${user.username}#${user.discriminator}) isn't a member of the server and thus can't be used to submit questions.`)}`
+                }
+            };
+        } else if(guildUser.fetchError) {
+            return {
+                statusCode: 303,
+                headers: {
+                    "Location": `/error`
                 }
             };
         }

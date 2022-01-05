@@ -13,7 +13,9 @@ function createJwt(data, duration) {
 }
 
 function decodeJwt(token) {
-    return jwt.verify(token, process.env.JWT_SECRET);
+    try {
+        return jwt.verify(token, process.env.JWT_SECRET);
+    } catch(e) { return null }
 }
 
 module.exports = { createJwt, decodeJwt };

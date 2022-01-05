@@ -13,8 +13,9 @@ async function getUserInfo(token) {
     const data = await result.json();
 
     if (!result.ok) {
-        console.log(data);
-        throw new Error("Failed to get user information");
+        console.error("Failed to get user data from access token");
+        console.error(data);
+        return { fetchError: true };
     }
 
     return data;
@@ -30,9 +31,11 @@ async function getGuildUserInfo(userId, guildId, botToken) {
     if (result.ok) {
         return await result.json();
     } else if (result.status === 404) {
-        return null;
+        return { userNotFound: true };
     } else {
-        throw new Error("Failed to get guild user information");
+        console.error("Failed to get guild user info");
+        console.error(await result.json());
+        return { fetchError: true };
     }
 }
 

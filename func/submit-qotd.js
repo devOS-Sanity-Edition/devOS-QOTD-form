@@ -21,7 +21,6 @@ exports.handler = async function (event, context) {
         payload.qotdDesc !== undefined &&
         payload.token !== undefined) {
         
-        const userInfo = decodeJwt(payload.token);
         const message = {
             embed: {
                 title: "New question of the day submitted!",
@@ -38,16 +37,32 @@ exports.handler = async function (event, context) {
                 ]
             }
         }
-        // Do one last check in case the user left the server and still had a valid jwt 
+        const userInfo = decodeJwt(payload.token);
+        if(!userInfo) {
+            return {
+                statusCode: 303,
+                headers: {
+                    "Location": `/error?msg=${encodeURIComponent("Invalid token, please re-login.")}`
+                }
+            }
+        }
+        // Do one last check in case the user left the server and still had a valid jwt
         const guildUser = await getGuildUserInfo(userInfo.id, process.env.GUILD_ID, process.env.DISCORD_BOT_TOKEN);
-        if (!guildUser) {
+        if (guildUser.userNotFound) {
             return {
                 statusCode: 303,
                 headers: {
                     "Location": `/error?msg=${encodeURIComponent(`This account (${userInfo.username}#${userInfo.discriminator}) isn't a member of the server and thus can't be used to submit questions.`)}`
                 }
             };
-        };
+        } else if(guildUser.fetchError) {
+            return {
+                statusCode: 303,
+                headers: {
+                    "Location": `/error`
+                }
+            };
+        }
 
         const result = await fetch(`${API_ENDPOINT}/channels/${encodeURIComponent(process.env.QOTD_SUGGESTION_CHANNEL)}/messages`, {
             method: "POST",
@@ -66,8 +81,14 @@ exports.handler = async function (event, context) {
                 }
             };
         } else {
-            console.log(await result.json());
-            throw new Error("Failed to submit message");
+            console.error("Failed to send form data to discord channel.");
+            console.error(await result.json());
+            return {
+                statusCode: 303,
+                headers: {
+                    "Location": `/error?msg=${encodeURIComponent("Something went wrong while submitting your quesion. Please try again in a bit. ")}`
+                }
+            };
         }
     }
 
