@@ -3,7 +3,6 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css2?family=Fira+Sans&display=swap" rel="stylesheet">
         <link href="./fonts/fonts.css" rel="stylesheet">
@@ -17,7 +16,7 @@
         </div>
 
         <div class="flex-fill flex-column text-center d-flex h-100 justify-content-center align-items-center">
-            <a class="btn" id="login" style="font-size: 2rem; margin-bottom:8px;" href="/.netlify/functions/oauth">Login with Discord</a>
+            <button class="btn" id="login" style="font-size: 2rem; margin-bottom:8px;" onclick="openOauth()">Login with Discord</button>
             <div class="note-msg">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -30,6 +29,14 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <p class="d-inline"> submissions made through here are anonymous and aren't linked to your account.
+                </p>
+            </div>
+            <div id="storageError" class="note-msg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="d-inline">
+                    Error: Persistent storage (localStorage to be specific) seems to be disabled, which is required for this site to work correctly. Please enable it to use this site.
                 </p>
             </div>
         </div>
@@ -46,9 +53,17 @@
             }
 
             const state = generateRandomString();
-            localStorage.setItem("state", state);
-
-            document.getElementById("login").href += `?state=${encodeURIComponent(state)}`;
+            // catch errors incase localstorage is disabled for some reason.
+            try {
+                localStorage.setItem("state", state);
+            } catch(e) {
+                console.error("Failed to set state to localStorage. Is localStorage disabled?");
+                document.getElementById("storageError").style.display = "block";
+                document.getElementById("login").disabled = true;
+            };
+            function openOauth() {
+                location.href = `/.netlify/functions/oauth?state=${encodeURIComponent(state)}`;
+            };
         </script>
     </body>
 </html>

@@ -37,7 +37,6 @@
 
 body {
     background: var(--background);
-
     font-family: "Poppins", sans-serif;
 }
 
@@ -114,11 +113,19 @@ textarea:focus {
 }
 div.note-msg {
     color: var(--text-tertiary);
+    margin: 5px 5px 0 5px;
 }
+
 #username {
     color: var(--text-secondary) !important;
 }
-
+#login {
+    margin-top:10px;
+}
+#storageError {
+   display: none;
+   color: #f04747;
+}
 
 a {
     color: var(--text-primary) !important;
