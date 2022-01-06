@@ -86,7 +86,7 @@ exports.handler = async function (event, context) {
             return {
                 statusCode: 303,
                 headers: {
-                    "Location": `/error?msg=${encodeURIComponent("Something went wrong while submitting your quesion. Please try again in a bit. ")}`
+                    "Location": `/error?msg=${encodeURIComponent("Something went wrong while submitting your question. Please try again in a bit. ")}`
                 }
             };
         }
